@@ -1,0 +1,161 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        containers: [1, 2, 3, 4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Cypress
+        run: npx cypress install
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          headed: false
+          record: false
+          parallel: true
+          group: 'Actions example'
+          spec: cypress/e2e/**/*.feature
+          config-file: cypress.config.js
+          wait-on: 'https://demoqa.com'
+          wait-on-timeout: 120
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore
+
+      - name: Generate and upload reports
+        if: always()
+        run: |
+          npm run report
+        env:
+          CI: true
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-reports
+          path: cypress/reports
+          if-no-files-found: ignore
+
+  cypress-visual:
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run visual regression tests
+        run: |
+          npm run test:visual
+        env:
+          CI: true
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security tests
+        run: |
+          npm run test:security
+        env:
+          CI: true
+
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run performance tests
+        run: |
+          npm run test:performance
+        env:
+          CI: true
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [cypress-run, cypress-visual, security-scan, performance-test]
+    if: always()
+    steps:
+      - name: Notify on success
+        if: needs.cypress-run.result == 'success' && needs.cypress-visual.result == 'success' && needs.security-scan.result == 'success' && needs.performance-test.result == 'success'
+        run: |
+          echo "All tests passed successfully!"
+          # Add notification logic here (Slack, email, etc.)
+
+      - name: Notify on failure
+        if: needs.cypress-run.result == 'failure' || needs.cypress-visual.result == 'failure' || needs.security-scan.result == 'failure' || needs.performance-test.result == 'failure'
+        run: |
+          echo "Some tests failed. Please check the logs."
+          # Add notification logic here (Slack, email, etc.) 

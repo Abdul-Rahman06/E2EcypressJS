@@ -1,0 +1,233 @@
+{
+  "users": {
+    "validUser": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com",
+      "gender": "male",
+      "mobile": "1234567890",
+      "dateOfBirth": {
+        "day": "15",
+        "month": "January",
+        "year": "1990"
+      },
+      "subjects": ["Maths", "Physics"],
+      "hobbies": ["sports", "reading"],
+      "picture": "test-image.jpg",
+      "address": "123 Test Street, Test City, Test State 12345",
+      "state": "NCR",
+      "city": "Delhi"
+    },
+    "validUser2": {
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "email": "jane.smith@example.com",
+      "gender": "female",
+      "mobile": "9876543210",
+      "dateOfBirth": {
+        "day": "20",
+        "month": "March",
+        "year": "1985"
+      },
+      "subjects": ["Chemistry", "Biology"],
+      "hobbies": ["music"],
+      "picture": "test-image-2.jpg",
+      "address": "456 Sample Avenue, Sample City, Sample State 54321",
+      "state": "Uttar Pradesh",
+      "city": "Agra"
+    },
+    "invalidUser": {
+      "firstName": "",
+      "lastName": "",
+      "email": "invalid-email",
+      "gender": "male",
+      "mobile": "123",
+      "dateOfBirth": {
+        "day": "32",
+        "month": "Invalid",
+        "year": "2025"
+      },
+      "subjects": [],
+      "hobbies": [],
+      "picture": "",
+      "address": "",
+      "state": "",
+      "city": ""
+    }
+  },
+  "forms": {
+    "practiceForm": {
+      "validData": {
+        "firstName": "Test",
+        "lastName": "User",
+        "email": "test.user@example.com",
+        "gender": "male",
+        "mobile": "1234567890",
+        "dateOfBirth": {
+          "day": "10",
+          "month": "June",
+          "year": "1995"
+        },
+        "subjects": ["Computer Science", "English"],
+        "hobbies": ["sports", "music"],
+        "picture": "sample-image.jpg",
+        "address": "789 Demo Road, Demo City, Demo State 67890",
+        "state": "Haryana",
+        "city": "Karnal"
+      },
+      "invalidData": {
+        "firstName": "",
+        "lastName": "",
+        "email": "invalid-email-format",
+        "gender": "",
+        "mobile": "abc",
+        "dateOfBirth": {
+          "day": "99",
+          "month": "InvalidMonth",
+          "year": "9999"
+        },
+        "subjects": [],
+        "hobbies": [],
+        "picture": "non-existent-file.jpg",
+        "address": "",
+        "state": "",
+        "city": ""
+      }
+    }
+  },
+  "api": {
+    "endpoints": {
+      "baseUrl": "https://demoqa.com",
+      "books": "/BookStore/v1/Books",
+      "users": "/Account/v1/User",
+      "generateToken": "/Account/v1/GenerateToken",
+      "authorized": "/Account/v1/Authorized"
+    },
+    "testData": {
+      "validUser": {
+        "userName": "testuser123",
+        "password": "TestPassword123!"
+      },
+      "invalidUser": {
+        "userName": "invaliduser",
+        "password": "wrongpassword"
+      },
+      "newUser": {
+        "userName": "newuser456",
+        "password": "NewPassword456!"
+      }
+    }
+  },
+  "ui": {
+    "elements": {
+      "buttons": {
+        "doubleClick": "#doubleClickBtn",
+        "rightClick": "#rightClickBtn",
+        "clickMe": "#clickMe"
+      },
+      "textBox": {
+        "fullName": "#userName",
+        "email": "#userEmail",
+        "currentAddress": "#currentAddress",
+        "permanentAddress": "#permanentAddress"
+      },
+      "checkBox": {
+        "home": "#tree-node-home",
+        "desktop": "#tree-node-desktop",
+        "documents": "#tree-node-documents",
+        "downloads": "#tree-node-downloads"
+      },
+      "radioButton": {
+        "yes": "#yesRadio",
+        "impressive": "#impressiveRadio",
+        "no": "#noRadio"
+      },
+      "webTables": {
+        "addButton": "#addNewRecordButton",
+        "firstName": "#firstName",
+        "lastName": "#lastName",
+        "email": "#userEmail",
+        "age": "#age",
+        "salary": "#salary",
+        "department": "#department",
+        "submit": "#submit"
+      }
+    },
+    "alerts": {
+      "alertButton": "#alertButton",
+      "timerAlertButton": "#timerAlertButton",
+      "confirmButton": "#confirmButton",
+      "promptButton": "#promptButton"
+    },
+    "frames": {
+      "frame1": "#frame1",
+      "frame2": "#frame2"
+    },
+    "windows": {
+      "newTabButton": "#tabButton",
+      "newWindowButton": "#windowButton",
+      "newWindowMessageButton": "#messageWindowButton"
+    }
+  },
+  "validation": {
+    "messages": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number",
+      "invalidDate": "Please enter a valid date",
+      "fileRequired": "Please select a file",
+      "fileSize": "File size should not exceed 5MB",
+      "fileType": "Please select a valid file type"
+    },
+    "patterns": {
+      "email": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+      "phone": "^[0-9]{10}$",
+      "name": "^[a-zA-Z\\s]{2,50}$",
+      "address": "^[a-zA-Z0-9\\s,.-]{10,200}$"
+    }
+  },
+  "testScenarios": {
+    "smoke": {
+      "description": "Basic functionality tests",
+      "tests": [
+        "homepage_should_load",
+        "navigation_should_work",
+        "forms_should_be_accessible"
+      ]
+    },
+    "regression": {
+      "description": "Comprehensive functionality tests",
+      "tests": [
+        "all_form_validations",
+        "all_api_endpoints",
+        "all_ui_elements"
+      ]
+    },
+    "edgeCases": {
+      "description": "Boundary and edge case tests",
+      "tests": [
+        "empty_form_submission",
+        "invalid_data_handling",
+        "large_file_upload",
+        "special_characters_input"
+      ]
+    }
+  },
+  "environments": {
+    "staging": {
+      "baseUrl": "https://demoqa.com",
+      "apiBaseUrl": "https://demoqa.com",
+      "timeout": 10000
+    },
+    "production": {
+      "baseUrl": "https://demoqa.com",
+      "apiBaseUrl": "https://demoqa.com",
+      "timeout": 15000
+    },
+    "local": {
+      "baseUrl": "http://localhost:3000",
+      "apiBaseUrl": "http://localhost:3000",
+      "timeout": 5000
+    }
+  }
+} 

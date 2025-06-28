@@ -2,7 +2,7 @@
 
 class BasePage {
   constructor() {
-    this.baseUrl = Cypress.env('baseUrl') || 'https://demoqa.com';
+    this.baseUrl = Cypress.env('baseUrl') || 'https://www.saucedemo.com';
     this.timeout = Cypress.env('timeout') || 10000;
   }
 
@@ -10,7 +10,7 @@ class BasePage {
   visit(path = '') {
     const url = path.startsWith('http') ? path : `${this.baseUrl}${path}`;
     cy.visit(url);
-    cy.waitForPageLoad();
+    cy.wait(2000); // Wait for page to load
     return this;
   }
 
@@ -188,7 +188,7 @@ class BasePage {
 
   // Wait for page load
   waitForPageLoad() {
-    cy.waitForPageLoad();
+    cy.wait(2000);
     return this;
   }
 
@@ -198,20 +198,35 @@ class BasePage {
     return this;
   }
 
-  // Handle alert
+  // Handle alerts
   handleAlert(accept = true) {
-    cy.handleAlert(accept);
+    if (accept) {
+      cy.on('window:confirm', () => true);
+      cy.on('window:alert', () => true);
+    } else {
+      cy.on('window:confirm', () => false);
+    }
     return this;
   }
 
   // Check if element exists
   elementExists(selector) {
-    return cy.elementExists(selector);
+    return cy.get('body').then(($body) => {
+      return $body.find(selector).length > 0;
+    });
   }
 
   // Check if element is in viewport
   isInViewport(selector) {
-    return cy.isInViewport(selector);
+    return cy.get(selector).then(($el) => {
+      const rect = $el[0].getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    });
   }
 
   // Take screenshot
@@ -222,11 +237,11 @@ class BasePage {
 
   // Wait for element to be stable
   waitForElementStable(selector, timeout = 5000) {
-    cy.wait(timeout);
+    cy.get(selector, { timeout }).should('be.visible');
     return this;
   }
 
-  // Retry action with backoff
+  // Retry action
   retryAction(action, maxRetries = 3) {
     let lastError;
     for (let i = 0; i < maxRetries; i++) {
@@ -235,7 +250,7 @@ class BasePage {
       } catch (error) {
         lastError = error;
         if (i < maxRetries - 1) {
-          cy.wait(1000 * (i + 1));
+          cy.wait(1000);
         }
       }
     }
@@ -244,7 +259,18 @@ class BasePage {
 
   // Generate random data
   generateRandomData(type) {
-    return cy.generateRandomData(type);
+    const data = {
+      firstName: `Test${Math.random().toString(36).substring(7)}`,
+      lastName: `User${Math.random().toString(36).substring(7)}`,
+      email: `test${Math.random().toString(36).substring(7)}@example.com`,
+      phone: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+      address: `${Math.floor(Math.random() * 9999)} Test Street`,
+      city: 'Test City',
+      zipCode: `${Math.floor(Math.random() * 90000) + 10000}`,
+      password: `Password${Math.random().toString(36).substring(7)}123!`
+    };
+    
+    return type ? data[type] : data;
   }
 
   // Get current URL
@@ -293,18 +319,44 @@ class BasePage {
     return this;
   }
 
-  // Wait for specific time
+  // Wait
   wait(ms) {
     cy.wait(ms);
     return this;
   }
 
-  // Log message
+  // Log
   log(message) {
     cy.log(message);
     return this;
   }
+
+  // Load test data
+  loadTestData() {
+    return cy.fixture('testData.json');
+  }
+
+  // Get random user
+  getRandomUser() {
+    return this.loadTestData().then((data) => {
+      const userTypes = Object.keys(data.users);
+      const randomType = userTypes[Math.floor(Math.random() * userTypes.length)];
+      return data.users[randomType];
+    });
+  }
+
+  // Get standard user
+  getStandardUser() {
+    return this.loadTestData().then((data) => data.users.standard);
+  }
+
+  // Get random product
+  getRandomProduct() {
+    return this.loadTestData().then((data) => {
+      const randomIndex = Math.floor(Math.random() * data.products.length);
+      return data.products[randomIndex];
+    });
+  }
 }
 
-// Export the base page class
 export default BasePage; 

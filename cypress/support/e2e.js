@@ -37,6 +37,11 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   if (err.message.includes('Script error')) {
     return false;
   }
+  if (err.message.includes('setup is not a function') || 
+      err.message.includes('adplus.js') ||
+      err.message.includes('google_ads_iframe')) {
+    return false;
+  }
   return true;
 });
 
@@ -65,4 +70,13 @@ afterEach(() => {
     cy.capturePerformance();
     cy.generateTestSummary();
   }
-}); 
+});
+
+// Configure viewport for better testing
+Cypress.config('viewportWidth', 1920);
+Cypress.config('viewportHeight', 1080);
+
+// Increase default timeout for slow loading pages
+Cypress.config('defaultCommandTimeout', 10000);
+Cypress.config('requestTimeout', 10000);
+Cypress.config('responseTimeout', 10000); 

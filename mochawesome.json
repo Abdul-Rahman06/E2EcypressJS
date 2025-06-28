@@ -1,0 +1,15 @@
+{
+  "reporterEnabled": "mochawesome",
+  "mochawesomeReporterOptions": {
+    "reportDir": "reports",
+    "overwrite": false,
+    "html": true,
+    "json": true,
+    "timestamp": "yyyy-mm-dd_HH-MM-ss",
+    "reportTitle": "Sauce Demo Test Report",
+    "reportPageTitle": "Sauce Demo Test Results",
+    "embeddedScreenshots": true,
+    "inlineAssets": true,
+    "saveAllAttempts": false
+  }
+} 
